@@ -1,4 +1,5 @@
 import React from "react";
+import Question from "./Question"
 
 
 export default function Action(props) {
@@ -9,7 +10,14 @@ export default function Action(props) {
 
         <div className="Action">
 
-            <button className="Action__btn">
+            <Question
+                question={props.question}
+                holdAnswer={props.holdAnswer}
+            />
+
+            <button className="Action__btn"
+                onClick={props.checkAnswers}
+            >
                 Check answers
             </button>
 
