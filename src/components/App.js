@@ -7,62 +7,108 @@ import {nanoid} from 'nanoid'
 export default function App() {
 
     const [start, setStart] = React.useState(false)
-    const [question, setQuestion] = React.useState([])
+    const [questions, setQuestions] = React.useState([])
+    const [checked, setChecked] = React.useState(false)
+    const [correctAnswers, setCorrectAnswers] = React.useState(0)
 
     React.useEffect(() => {
-        fetch('https://opentdb.com/api.php?amount=1&category=9&difficulty=easy&type=multiple')
+        fetch('https://opentdb.com/api.php?amount=5&difficulty=easy&type=multiple')
             .then(res => res.json())
-            .then(data => setQuestion(data.results[0]))
+            .then(data => setQuestions(data.results))
     }, [])
 
-    // console.log(question)
 
     function startQuiz() {
         setStart(true)
+        renderNewQuestions()
+    }
 
-        setQuestion(prevState => {
+    function renderNewQuestions() {
+
+        setQuestions(prevState => prevState.map(question => {
 
             const random = Math.floor(Math.random() * 4)
-            const answers = [...prevState.incorrect_answers]
-            answers.splice(random, 0, prevState.correct_answer)
+            const answers = [...question.incorrect_answers]
+            answers.splice(random, 0, question.correct_answer)
 
             const allAnswers = answers.map(item => ({
                 answer: item,
                 isHeld: false,
+                correct: false,
+                wrong: false,
                 id: nanoid()
             }))
 
             return {
-                ask: prevState.question,
-                cor: prevState.correct_answer,
+                ask: question.question,
+                correct: question.correct_answer,
                 allAnswers: allAnswers
             }
-        })
+        }))
 
     }
 
     function holdAnswer(id) {
-        setQuestion(prevState => {
-            const allAnswers = prevState.allAnswers.map(answer => (
+
+        setQuestions(prevState => prevState.map(item => {
+
+            const allAnswers = item.allAnswers.map(answer => (
                 answer.id === id
                     ? {...answer, isHeld: !answer.isHeld}
-                    : {...answer, isHeld: false}
+                    : {...answer}
             ))
-            return {...prevState, allAnswers: allAnswers}
-        })
-        // console.log(question)
+            return {...item, allAnswers: allAnswers}
+
+        }))
+
     }
 
     function checkAnswers() {
-        setQuestion(prevState => {
-            const allAnswers = prevState.allAnswers.map(answer => (
-                answer.id === id
-                    ? {...answer, isHeld: !answer.isHeld}
-                    : {...answer, isHeld: false}
-            ))
-            return {...prevState, allAnswers: allAnswers}
-        })
+
+        setQuestions(prevState => prevState.map(item => {
+
+            const allAnswers = item.allAnswers.map(answer => {
+
+                if (answer.isHeld && answer.answer === item.correct) {
+                    setCorrectAnswers(prevState => prevState + .5)
+                }
+
+                if (
+                    answer.answer === item.correct
+                ) {
+                    return {...answer, correct: true, isHeld: false}
+                }
+
+                else if (
+                    answer.isHeld && answer.answer !== item.correct
+                ) {
+                    return {...answer, wrong: true, isHeld: false}
+                }
+
+                else {
+                    return answer
+                }
+
+            })
+
+            return {...item, allAnswers: allAnswers}
+
+        }))
+
+        setChecked(true)
     }
+
+    function playAgain() {
+
+        setQuestions([])
+        setChecked(false)
+        setCorrectAnswers(0)
+        fetch('https://opentdb.com/api.php?amount=5&difficulty=easy&type=multiple')
+            .then(res => res.json())
+            .then(data => setQuestions(data.results))
+            .then(() => renderNewQuestions())
+    }
+
 
     return(
         <main className="App">
@@ -71,9 +117,12 @@ export default function App() {
                 start
 
                     ? <Action
-                        question={question}
+                        questions={questions}
                         holdAnswer={holdAnswer}
                         checkAnswers={checkAnswers}
+                        checked={checked}
+                        result={correctAnswers}
+                        playAgain={playAgain}
                     />
 
                     : <Preface
@@ -85,24 +134,3 @@ export default function App() {
 
     )
 }
-
-
-
-
-
-// React.useEffect(() => {
-//
-//     setQuestions(apiData.map(item => {
-//         const random = Math.floor(Math.random() * 3)
-//         item.incorrect_answers.splice(random, 0, item.correct_answer)
-//
-//         return {
-//             ask: item.question,
-//             answers: item.incorrect_answers,
-//             correct: item.correct_answer,
-//             isHeld: false,
-//             id: nanoid()
-//         }
-//     }))
-//
-// }, [apiData])

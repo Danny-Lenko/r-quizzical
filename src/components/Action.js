@@ -1,25 +1,48 @@
 import React from "react";
 import Question from "./Question"
+import {nanoid} from "nanoid";
 
 
 export default function Action(props) {
 
-
+    const allQuestions = props.questions.map(item => {
+        return <Question
+            key={nanoid()}
+            question={item}
+            holdAnswer={props.holdAnswer}
+        />
+    })
 
     return(
 
         <div className="Action">
 
-            <Question
-                question={props.question}
-                holdAnswer={props.holdAnswer}
-            />
+            {allQuestions}
 
-            <button className="Action__btn"
-                onClick={props.checkAnswers}
-            >
-                Check answers
-            </button>
+            <div className="btn-container">
+
+                {props.checked
+                    && <span className="result-msg">
+                    {`You scored ${props.result}/5 correct answers`}
+                </span>}
+
+                {
+                    props.checked
+
+                    ? <button className="Action__btn"
+                              onClick={props.playAgain}
+                        >
+                            Play again
+                    </button>
+
+                    : <button className="Action__btn"
+                              onClick={props.checkAnswers}
+                        >
+                            Check answers
+                    </button>
+                }
+            </div>
+
 
             <svg className="preface__blob1" width="162" height="187" viewBox="0 0 162 187" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fillRule="evenodd" clipRule="evenodd" d="M99.4095 71.3947C71.1213 40.8507 33.3179 11.7816 37.1727 -29.6933C41.4394 -75.599 75.854 -115.359 118.419 -133.133C158.797 -149.994 206.035 -140.256 241.822 -115.149C271.947 -94.0141 272.823 -53.8756 282.141 -18.271C292.17 20.0508 318.521 60.8106 296.501 93.7792C273.539 128.159 224.991 133.432 183.931 128.768C148.318 124.723 123.751 97.6768 99.4095 71.3947Z" fill="#FFFAD1"/>

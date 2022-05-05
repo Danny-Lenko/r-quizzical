@@ -14,7 +14,7 @@ export default function Preface(props) {
             </h1>
 
             <p className="preface__subheading">
-                Easy questions on various topics
+                Only one answer is correct
             </p>
 
             <button className="preface__btn"

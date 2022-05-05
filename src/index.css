@@ -191,6 +191,19 @@ h4 {
     cursor: pointer;
 }
 
+.btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.result-msg {
+    font-size: calc(12.8rem / 16);
+    color: #293264;
+    font-weight: 700;
+    margin-right: 20px;
+}
+
 /* ------------------------------------------- Question component*/
 
 .Question {
