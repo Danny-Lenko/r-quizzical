@@ -38,26 +38,33 @@ export default function App() {
                 wrong: false,
                 id: nanoid()
             }))
+            const answersArr = answers.map(item => item)
 
             return {
                 ask: question.question,
                 correct: question.correct_answer,
-                allAnswers: allAnswers
+                allAnswers: allAnswers,
+                answersArr: answersArr,
+                id: nanoid()
             }
         }))
 
     }
 
-    function holdAnswer(id) {
+    function holdAnswer(choiceId, target) {
 
         setQuestions(prevState => prevState.map(item => {
 
-            const allAnswers = item.allAnswers.map(answer => (
-                answer.id === id
+            const newAnswers = item.allAnswers.map(answer => (
+
+                answer.id === choiceId
                     ? {...answer, isHeld: !answer.isHeld}
-                    : {...answer}
+                    : {...answer, isHeld: false}
             ))
-            return {...item, allAnswers: allAnswers}
+
+            return item.answersArr.includes(target.textContent)
+                ? {...item, allAnswers: newAnswers}
+                : item
 
         }))
 

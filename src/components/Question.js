@@ -17,7 +17,9 @@ export default function Question(props) {
 
             <div className="Answer"
                 key={item.id}
-                onClick={() => props.holdAnswer(item.id)}
+                onClick={(event) => {
+                    props.holdAnswer(item.id, event.target)
+                }}
                 style={styles}
             >
                 {decode(item.answer)}
