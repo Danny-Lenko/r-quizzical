@@ -77,7 +77,7 @@ export default function App() {
             const allAnswers = item.allAnswers.map(answer => {
 
                 if (answer.isHeld && answer.answer === item.correct) {
-                    setCorrectAnswers(prevState => prevState + .5)
+                    setCorrectAnswers(prevState => prevState + 1)
                 }
 
                 if (
