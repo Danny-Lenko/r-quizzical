@@ -41,11 +41,29 @@ function ContextProvider(props) {
       setHasStarted(true)
    }
 
+   function holdAnswer(id, question) {
+      const targetQuestion = questions.find(item => item.question === question)
+      const targetAnswer = targetQuestion.allAnswers.find(item => item.id === id)
+
+      console.log(targetQuestion, targetAnswer)
+      
+      setQuestions(prevState => prevState.map(item => (
+         item.id === targetQuestion.id
+            ? {...item, allAnswers: item.allAnswers.map(answer => (
+               answer.id === targetAnswer.id 
+                  ? {...answer, isHeld: !answer.isHeld}
+                  : {...answer, isHeld: false}
+            ))}
+            : item
+      )))
+   }
+
    return(
       <Context.Provider value={{
          hasStarted,
          startQuiz,
-         questions
+         questions, 
+         holdAnswer
       }}>
          {props.children}
       </Context.Provider>
