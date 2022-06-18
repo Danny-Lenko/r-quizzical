@@ -4,9 +4,10 @@ import {Context} from '../Context'
 import Question from './Question'
 
 function Action() {
-   const {questions} = useContext(Context)
+   const {questions, checkAnswers, correctAnswers} = useContext(Context)
 
-   console.log(questions)
+   // console.log(questions)
+   console.log(correctAnswers)
 
    const allQuestions = questions.map(question => (
       <Question question={question} key={question.id}/>
@@ -15,7 +16,10 @@ function Action() {
    return(
       <div className="action">
          {allQuestions}
-         <button className="action__btn">
+         <button 
+            className="action__btn"
+            onClick={checkAnswers}
+         >
             Check answers
          </button>
       </div>

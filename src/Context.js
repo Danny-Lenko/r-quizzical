@@ -6,11 +6,13 @@ const Context = createContext(null)
 function ContextProvider(props) {
    const [hasStarted, setHasStarted] = useState(false)
    const [questions, setQuestions] = useState()
+   const [correctAnswers, setCorrectAnswers] = useState(0)
 
    useEffect(() => {
       fetch("https://opentdb.com/api.php?amount=5&difficulty=easy&type=multiple")
          .then(res => res.json())
          .then(data => setQuestions(createQuestions(data.results)))
+         .catch(err => alert(`RELOAD PAGE, ERROR FETCHING DATA: ${err}`))
    }, [])
 
    function createQuestions(rowData) {
@@ -33,7 +35,8 @@ function ContextProvider(props) {
       return answers.map(answer => ({
          id: nanoid(),
          content: answer,
-         isHeld: false
+         isHeld: false,
+         isCorrectAnswer: null
       }))
    }
 
@@ -44,17 +47,39 @@ function ContextProvider(props) {
    function holdAnswer(id, question) {
       const targetQuestion = questions.find(item => item.question === question)
       const targetAnswer = targetQuestion.allAnswers.find(item => item.id === id)
-
-      console.log(targetQuestion, targetAnswer)
       
       setQuestions(prevState => prevState.map(item => (
          item.id === targetQuestion.id
+
             ? {...item, allAnswers: item.allAnswers.map(answer => (
                answer.id === targetAnswer.id 
                   ? {...answer, isHeld: !answer.isHeld}
                   : {...answer, isHeld: false}
             ))}
+
             : item
+      )))
+   }
+
+   function checkAnswers() {
+      setQuestions(prevState => prevState.map(item => (
+
+         {...item, allAnswers: item.allAnswers.map(answer => {
+            if (answer.isHeld && answer.content === item.correctAnswer) {
+               setCorrectAnswers(prevState => prevState + 1)
+            }
+
+            if (answer.content === item.correctAnswer) {
+               return {...answer, isCorrectAnswer: true}
+            }
+
+            if (answer.isHeld && answer.content !== item.correctAnswer) {
+               return {...answer, isCorrectAnswer: false}
+            }
+
+            return answer
+         })}
+
       )))
    }
 
@@ -63,7 +88,9 @@ function ContextProvider(props) {
          hasStarted,
          startQuiz,
          questions, 
-         holdAnswer
+         holdAnswer,
+         checkAnswers,
+         correctAnswers
       }}>
          {props.children}
       </Context.Provider>

@@ -9,7 +9,12 @@ function Question({question}) {
          key={answer.id}
          className="answer"
          onClick={ () => holdAnswer(answer.id, question.question) }
-         style={{background: `${answer.isHeld ? 'green' : ''}`}}
+         style={{background: `
+            ${answer.isCorrectAnswer ? 'green'
+               : answer.isCorrectAnswer === false ? 'red'
+               : answer.isHeld ? 'blue'
+               : ''}
+         `}}
       >
          {answer.content}
       </div>
