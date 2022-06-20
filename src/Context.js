@@ -5,15 +5,24 @@ const Context = createContext(null)
 
 function ContextProvider(props) {
    const [hasStarted, setHasStarted] = useState(false)
+   const [apiData, setApiData] = useState()
    const [questions, setQuestions] = useState()
    const [correctAnswers, setCorrectAnswers] = useState(0)
+   const [answersChecked, setAnswersChecked] = useState(false)
 
-   useEffect(() => {
+   useEffect( () => fetchApiData(), [] )
+
+   function fetchApiData() {
       fetch("https://opentdb.com/api.php?amount=5&difficulty=easy&type=multiple")
          .then(res => res.json())
-         .then(data => setQuestions(createQuestions(data.results)))
+         .then(data => setApiData(data.results))
          .catch(err => alert(`RELOAD PAGE, ERROR FETCHING DATA: ${err}`))
-   }, [])
+   }
+
+   function startQuiz() {
+      setQuestions( createQuestions(apiData) )
+      setHasStarted(true)
+   }
 
    function createQuestions(rowData) {
       return rowData.map(item => ({
@@ -38,10 +47,6 @@ function ContextProvider(props) {
          isHeld: false,
          isCorrectAnswer: null
       }))
-   }
-
-   function startQuiz() {
-      setHasStarted(true)
    }
 
    function holdAnswer(id, question) {
@@ -81,16 +86,34 @@ function ContextProvider(props) {
          })}
 
       )))
+
+      setApiData(null)
+      setAnswersChecked(true)
+      fetchApiData()
+   }
+
+   function playAgain() {
+      setCorrectAnswers(0)
+      setAnswersChecked(false)
+
+      if (apiData) {
+         setQuestions( createQuestions(apiData) )
+      } else {
+         setHasStarted(false)
+      }
    }
 
    return(
       <Context.Provider value={{
          hasStarted,
+         apiData,
          startQuiz,
          questions, 
          holdAnswer,
          checkAnswers,
-         correctAnswers
+         correctAnswers,
+         answersChecked,
+         playAgain
       }}>
          {props.children}
       </Context.Provider>

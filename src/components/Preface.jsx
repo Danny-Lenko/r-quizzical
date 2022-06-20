@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import {Context} from '../Context'
 
 function Preface() {
-   const {startQuiz, questions} = useContext(Context)
+   const {startQuiz, apiData} = useContext(Context)
 
    function chooseButtonRender(loaded) {
       return loaded
@@ -31,7 +31,7 @@ function Preface() {
             Choose one right answer per question
          </p>
 
-         { chooseButtonRender(questions) }
+         { chooseButtonRender(apiData) }
          
       </section>
    )
