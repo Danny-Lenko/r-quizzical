@@ -2,6 +2,8 @@ import React, { useContext } from 'react'
 
 import {Context} from '../Context'
 import Question from './Question'
+import { ReactComponent as BlobOne } from '../images/action-blob1.svg'
+import { ReactComponent as BlobTwo } from '../images/action-blob2.svg'
 
 function Action() {
    const {
@@ -11,9 +13,6 @@ function Action() {
       answersChecked,
       playAgain
    } = useContext(Context)
-
-   // console.log(questions)
-   // console.log(correctAnswers)
 
    function chooseButtonToRender(inputState) {
       return inputState
@@ -38,14 +37,17 @@ function Action() {
          </button>
    }
 
-   const allQuestions = questions.map(question => (
-      <Question question={question} key={question.id}/>
+   const allQuestions = questions.map((question, i) => (
+      <Question question={question} key={question.id} i={i}/>
    ))
 
    return(
       <div className="action">
          {allQuestions}
          { chooseButtonToRender(answersChecked) }
+
+         <BlobOne className="blob1" />
+         <BlobTwo className="blob2" />
       </div>
    )
 }

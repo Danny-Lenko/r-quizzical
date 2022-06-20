@@ -16,7 +16,7 @@ function ContextProvider(props) {
       fetch("https://opentdb.com/api.php?amount=5&difficulty=easy&type=multiple")
          .then(res => res.json())
          .then(data => setApiData(data.results))
-         .catch(err => alert(`RELOAD PAGE, ERROR FETCHING DATA: ${err}`))
+         .catch(err => alert(`RELOAD PAGE, ${err}`))
    }
 
    function startQuiz() {

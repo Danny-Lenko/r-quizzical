@@ -1,6 +1,8 @@
 import React, { useContext } from 'react'
 
 import {Context} from '../Context'
+import { ReactComponent as BlobOne } from '../images/preface-blob1.svg'
+import { ReactComponent as BlobTwo } from '../images/preface-blob2.svg'
 
 function Preface() {
    const {startQuiz, apiData} = useContext(Context)
@@ -32,7 +34,9 @@ function Preface() {
          </p>
 
          { chooseButtonRender(apiData) }
-         
+
+         <BlobOne className="blob1" />
+         <BlobTwo className="blob2" />
       </section>
    )
 }
